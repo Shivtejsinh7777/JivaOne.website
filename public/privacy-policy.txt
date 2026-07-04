@@ -1,0 +1,165 @@
+JIVAONE — PRIVACY POLICY
+=========================
+
+Last Updated: June 1, 2026
+Application: JivaOne v1.0
+Developer: Shivtej Mane Deshmukh (SMD_Ai)
+
+
+YOUR PRIVACY AT A GLANCE
+-------------------------
+JivaOne is an offline-first AI assistant. All AI processing, voice recognition, chat history, and user data are stored and processed locally on your device. We do not collect, transmit, or sell your personal data to any servers or third parties. Your data never leaves your computer unless you explicitly use an online feature like web search.
+
+
+1. INTRODUCTION
+---------------
+This Privacy Policy describes how JivaOne ("the Application", "we", "our"), developed by Shivtej Mane Deshmukh operating as SMD_Ai, handles information when you use our Windows desktop application.
+
+JivaOne is designed with a privacy-first, offline-first architecture. The Application runs AI models locally on your machine using GPT4All and local GGUF model files. By design, your conversations, personal data, and preferences remain on your device and under your control.
+
+
+2. DATA WE COLLECT & STORE LOCALLY
+-----------------------------------
+All data listed below is stored exclusively on your local device in the application's data directory. None of it is transmitted to external servers.
+
+  Data Type                   Details                                                              Storage
+  -------------------------   ------------------------------------------------------------------   -----------
+  Account Information         Username, full name, nickname, email address (optional)               Local Only
+  Password                    Hashed using bcrypt — never stored in plaintext                Local Only
+  Recovery Code               Hashed and stored; plaintext shown once at registration               Local Only
+  Face Biometric Data         128-dimensional face embedding vector (not actual images)              Local Only
+  Chat History                Conversation sessions between you and the AI assistant                 Local Only
+  User Profile & Preferences  Hobbies, occupation, location, custom instructions, learned patterns  Local Only
+  Contextual Memory           Name, preferences, and facts you explicitly ask JivaOne to remember   Local Only
+  Voice Recordings            Processed locally in real-time via Faster-Whisper; not stored          Local Only
+  Screenshots                 Saved locally to a dedicated folder when you request a screenshot      Local Only
+  Shadow Mode Logs            Active window titles (opt-in only) — stored in memory, not on disk     Opt-In
+
+
+3. DATA WE DO NOT COLLECT
+--------------------------
+JivaOne does NOT collect, transmit, or process the following:
+
+  - Telemetry, analytics, or usage tracking data
+  - Advertising identifiers or ad-related data
+  - Keystroke logs, clipboard contents, or browsing history
+  - GPS/geolocation data
+  - Contact lists, call logs, or SMS messages
+  - Financial or payment information
+  - Data from other applications on your device
+  - Any data sent to our servers — we do not operate any data-collection servers
+
+
+4. HOW WE USE YOUR DATA
+------------------------
+All locally stored data is used exclusively to provide the Application's features:
+
+  - Account & Authentication: To provide secure local login, face login, and password recovery.
+  - AI Conversations: To power the offline AI assistant and maintain conversation context.
+  - Personalization: To remember your preferences, name, and custom instructions for a tailored experience.
+  - Voice Processing: To convert your speech to text locally using Faster-Whisper and respond with text-to-speech via Kokoro or AI4Bharat IndicTTS — all processed on-device.
+  - Shadow Mode (Opt-In): If you explicitly enable Shadow Mode and grant permission, JivaOne reads active window titles to provide productivity suggestions. This data is stored temporarily in application memory and is never written to disk or transmitted externally.
+  - System Automation: To execute your voice/text commands for system actions (volume, brightness, launching apps, etc.).
+
+
+5. ONLINE FEATURES & THIRD-PARTY SERVICES
+-------------------------------------------
+JivaOne is primarily offline, but certain optional features may connect to the internet when you explicitly invoke them:
+
+5.1 Web Search (DuckDuckGo)
+When offline AI knowledge is insufficient, you may request a web search. JivaOne uses DuckDuckGo to perform real-time searches. Your search query is sent to DuckDuckGo's servers. Please refer to DuckDuckGo's Privacy Policy (https://duckduckgo.com/privacy) for how they handle search data.
+
+5.2 WhatsApp Automation
+If you use the WhatsApp messaging feature, JivaOne automates your local WhatsApp Desktop or WhatsApp Web session. Messages are sent through your own WhatsApp account. JivaOne does not access, store, or transmit your WhatsApp contacts or messages to any external server.
+
+5.3 Music & Media Services
+Commands to play music may open URLs on YouTube, Spotify, or YouTube Music in your browser. JivaOne does not authenticate with or transmit data to these services beyond opening the requested URL.
+
+5.4 Email OTP (Password Recovery)
+If you configure email-based password recovery and provide SMTP credentials, a one-time password (OTP) may be sent to your registered email. The SMTP connection is made directly from your device using credentials you provide. We do not relay email through our servers.
+
+5.5 LAN Discovery (Zeroconf/mDNS)
+JivaOne broadcasts its service name on your local network only via Zeroconf/mDNS to enable mobile device pairing. This broadcast is limited to your LAN and does not transmit data over the internet.
+
+5.6 Optional Cloud AI Providers
+If you choose to configure an external AI provider (e.g., OpenAI API, Gemini API) by providing your own API key, your chat prompts may be sent to those providers' servers. This is entirely optional and user-initiated. Please refer to the respective provider's privacy policy. JivaOne stores your API keys locally and never transmits them to us.
+
+
+6. FACE AUTHENTICATION & BIOMETRIC DATA
+-----------------------------------------
+JivaOne offers an optional face-based login feature:
+
+  - Face detection and embedding generation is performed client-side in your browser using face-api.js. No images are sent to any server.
+  - A 128-dimensional numerical vector (face embedding) is generated from your face. The original image is not stored.
+  - The face embedding is stored locally in the application's data directory alongside your account information.
+  - Face embeddings cannot be reverse-engineered into photographs or recognizable images.
+  - You can delete your face embedding at any time from your account settings.
+
+
+7. SHADOW MODE & ACTIVITY MONITORING
+--------------------------------------
+Shadow Mode is a completely opt-in productivity feature:
+
+  - Disabled by default. Shadow Mode will not activate until you explicitly enable it and grant permission through the UI.
+  - When enabled, it reads the title of the currently active window to assess whether you may be distracted.
+  - Window titles are stored only in application memory (RAM) and are cleared when the application closes. They are not written to disk or transmitted externally.
+  - You can stop Shadow Mode, clear all observation logs, and revoke permission at any time.
+
+
+8. DATA SHARING & THIRD PARTIES
+---------------------------------
+We do not share, sell, rent, or trade your personal data with any third party. Since all data is stored locally on your device, we (the developer) have no access to your data whatsoever.
+
+
+9. DATA SECURITY
+-----------------
+JivaOne employs the following security measures:
+
+  - Password Hashing: All passwords are hashed using PBKDF2-SHA256 with salting. Plaintext passwords are never stored.
+  - Recovery Codes: Recovery codes are hashed before storage. The plaintext code is shown only once during account creation.
+  - OTP Expiration: Email OTPs expire after 10 minutes and are single-use.
+  - Local-Only Storage: All data resides on your device's filesystem, protected by your operating system's security controls (user permissions, disk encryption, etc.).
+  - No Remote Access: The developer cannot remotely access, view, or modify any data stored by JivaOne on your device.
+
+
+10. DATA RETENTION & DELETION
+-------------------------------
+Since all data is stored locally:
+
+  - You have full control over your data at all times.
+  - You can delete your account from within the application, which removes your user data, memory, profile, and face embedding.
+  - You can uninstall the application and manually delete the data directory (%USERPROFILE%\.jivaone\ or the application folder) to remove all traces.
+  - Shadow Mode logs are stored only in memory and are automatically cleared when the application closes.
+  - Chat history can be cleared from within the application interface.
+
+
+11. CHILDREN'S PRIVACY
+------------------------
+JivaOne is not specifically directed at children under the age of 13. We do not knowingly collect personal information from children. Since all data is stored locally and we have no data collection servers, we do not have the ability to identify whether a user is a child.
+
+
+12. YOUR RIGHTS
+----------------
+Because JivaOne stores all data locally on your device, you inherently have:
+
+  - Right to Access: All your data is stored in readable JSON files in the application's data directory.
+  - Right to Rectification: You can modify your profile, memory, and preferences at any time through the application.
+  - Right to Erasure: You can delete your account, clear chat history, remove face data, and uninstall the application to erase all data.
+  - Right to Data Portability: Your data is stored in standard JSON format and can be freely copied or backed up.
+
+
+13. CHANGES TO THIS POLICY
+----------------------------
+We may update this Privacy Policy from time to time to reflect changes in the Application's features or applicable laws. When we make changes, we will update the "Last Updated" date at the top of this page. We encourage you to review this policy periodically.
+
+
+14. CONTACT US
+---------------
+If you have any questions, concerns, or requests regarding this Privacy Policy or JivaOne's data practices, please contact us:
+
+  Developer:    Shivtej Mane Deshmukh (SMD_Ai)
+  Email:        smdai.jivaone@gmail.com
+  Application:  JivaOne — Offline AI Desktop Assistant for Windows
+
+
+© 2026 SMD_Ai. All rights reserved.
