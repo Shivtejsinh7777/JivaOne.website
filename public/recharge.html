@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Checkout — JivaOne by SMD_Ai</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-bg-primary: #030712;
+      --color-bg-secondary: #0a0f1e;
+      --color-surface: rgba(255, 255, 255, 0.03);
+      --color-border: rgba(255, 255, 255, 0.08);
+      --color-text-primary: #f8fafc;
+      --color-text-secondary: #94a3b8;
+      --color-accent-purple: #8b5cf6;
+      --color-accent-pink: #ec4899;
+      --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Decorative Glows */
+    .bg-grid {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(139, 92, 246, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139, 92, 246, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+    .orb {
+      position: absolute; width: 600px; height: 600px; z-index: 0; pointer-events: none;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.07) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+    }
+
+    /* Checkout Card */
+    .checkout-card {
+      position: relative; z-index: 10;
+      width: 100%; max-width: 480px;
+      padding: 40px; border-radius: 24px;
+      background: rgba(10, 15, 30, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--color-border);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    .brand {
+      display: inline-flex; align-items: center; gap: 10px; margin-bottom: 30px;
+      text-decoration: none;
+    }
+    .brand-icon {
+      width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #3b82f6, var(--color-accent-purple));
+      font-size: 20px; font-weight: bold; color: white;
+    }
+    .brand-text {
+      font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.02em;
+    }
+    .brand-text span {
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    h2 { font-size: 24px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .subtitle { color: var(--color-text-secondary); font-size: 14px; margin-bottom: 24px; }
+
+    /* Order details box */
+    .details-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--color-border);
+      border-radius: 16px; padding: 20px; margin-bottom: 30px;
+      text-align: left;
+    }
+    .detail-row {
+      display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px;
+    }
+    .detail-row:last-child { margin-bottom: 0; padding-top: 12px; border-top: 1px solid var(--color-border); }
+    .detail-label { color: var(--color-text-secondary); }
+    .detail-value { font-weight: 600; }
+    .price-value {
+      font-size: 18px; font-weight: 800;
+      background: linear-gradient(135deg, #a78bfa, #f472b6);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 600;
+      cursor: pointer; border: none; transition: all 0.2s ease;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-pink));
+      color: white; box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px); box-shadow: 0 6px 24px rgba(139, 92, 246, 0.4);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled {
+      opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05); color: #fff;
+      border: 1px solid var(--color-border); margin-top: 12px;
+    }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255,255,255,0.2); }
+
+    /* State screens */
+    .state-section { display: none; }
+    .state-active { display: block; }
+
+    .status-icon { font-size: 48px; margin-bottom: 20px; display: inline-block; }
+    .status-success { color: #10b981; }
+    .status-error { color: #ef4444; }
+    .status-warning { color: #f59e0b; }
+
+    .spinner {
+      width: 48px; height: 48px; border: 4px border-radius: 50%;
+      border: 4px solid rgba(139, 92, 246, 0.1);
+      border-top-color: var(--color-accent-purple);
+      animation: spin 1s infinite linear;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    footer {
+      position: absolute; bottom: 20px; z-index: 10;
+      font-size: 12px; color: var(--color-text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="orb"></div>
+
+  <div class="checkout-card">
+    <!-- Brand Header -->
+    <a href="/" class="brand">
+      <div class="brand-icon">J</div>
+      <div class="brand-text">Jiva<span>One</span></div>
+    </a>
+
+    <!-- 1. CHECKOUT READY STATE -->
+    <div id="state-ready" class="state-section state-active">
+      <h2>Secure Pro Checkout</h2>
+      <p class="subtitle">Complete your transaction safely via Razorpay</p>
+
+      <div class="details-box">
+        <div class="detail-row">
+          <span class="detail-label">Subscription Plan</span>
+          <span id="txt-plan-name" class="detail-value">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Username</span>
+          <span id="txt-username" class="detail-value">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Total Amount</span>
+          <span id="txt-price" class="detail-value price-value">—</span>
+        </div>
+      </div>
+
+      <button id="btn-pay" class="btn btn-primary">
+        Proceed to Secure Payment
+      </button>
+    </div>
+
+    <!-- 2. VERIFYING STATE -->
+    <div id="state-verifying" class="state-section">
+      <div class="spinner"></div>
+      <h2>Verifying Payment...</h2>
+      <p class="subtitle">Confirming your transaction with your local JivaOne application. Please keep this browser window open.</p>
+    </div>
+
+    <!-- 3. SUCCESS STATE -->
+    <div id="state-success" class="state-section">
+      <span class="status-icon status-success">🎉</span>
+      <h2>Subscription Activated!</h2>
+      <p class="subtitle">Thank you! Your JivaOne Pro activation completed successfully. You can now close this browser and return to your desktop app.</p>
+      <button onclick="window.close()" class="btn btn-primary">Close Window</button>
+    </div>
+
+    <!-- 4. LOCAL CONNECTION ERROR STATE (RETRIABLE) -->
+    <div id="state-local-error" class="state-section">
+      <span class="status-icon status-warning">⚠️</span>
+      <h2>Cannot Connect to App</h2>
+      <p class="subtitle">Your payment was successful, but we couldn't connect to the JivaOne app running on your computer (http://127.0.0.1:5050). Please make sure the desktop app is open and running.</p>
+      
+      <button id="btn-retry-local" class="btn btn-primary">
+        Retry Syncing with App
+      </button>
+      <button id="btn-copy-payment-details" class="btn btn-secondary">
+        Show Payment Details
+      </button>
+      
+      <div id="manual-verify-info" style="display:none; margin-top:20px; font-size:12px; text-align:left; background:rgba(255,255,255,0.02); padding:15px; border-radius:12px; border:1px solid var(--color-border);">
+        <p style="margin-bottom:8px;"><strong>Payment Reference Details:</strong></p>
+        <p>Order ID: <span id="lbl-err-order" style="font-family:monospace; word-break:break-all;"></span></p>
+        <p>Payment ID: <span id="lbl-err-pay" style="font-family:monospace; word-break:break-all;"></span></p>
+        <p>Signature: <span id="lbl-err-sig" style="font-family:monospace; word-break:break-all;"></span></p>
+      </div>
+    </div>
+
+    <!-- 5. VERIFICATION ERROR STATE -->
+    <div id="state-error" class="state-section">
+      <span class="status-icon status-error">❌</span>
+      <h2 id="err-title">Payment Failed</h2>
+      <p id="err-desc" class="subtitle">The signature verification failed or was rejected. Please contact support if your account was debited.</p>
+      <button id="btn-reload" class="btn btn-primary" onclick="window.location.reload()">Start Over</button>
+    </div>
+  </div>
+
+  <footer>Secure 256-bit SSL encrypted payments by Razorpay</footer>
+
+  <!-- Razorpay Checkout Script -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    // 1. Retrieve query parameters
+    const params = new URLSearchParams(window.location.search);
+    const key_id = params.get('key_id');
+    const order_id = params.get('order_id');
+    const amount = parseInt(params.get('amount') || '0', 10);
+    const plan_id = params.get('plan_id');
+    const username = params.get('username') || 'User';
+
+    // UI elements
+    const stateReady = document.getElementById('state-ready');
+    const stateVerifying = document.getElementById('state-verifying');
+    const stateSuccess = document.getElementById('state-success');
+    const stateLocalError = document.getElementById('state-local-error');
+    const stateError = document.getElementById('state-error');
+
+    const txtPlanName = document.getElementById('txt-plan-name');
+    const txtUsername = document.getElementById('txt-username');
+    const txtPrice = document.getElementById('txt-price');
+    const btnPay = document.getElementById('btn-pay');
+
+    // Populate UI values
+    const isPlan365 = plan_id === 'pro_365';
+    txtPlanName.innerText = isPlan365 ? 'JivaOne Pro 365-Day Plan' : 'JivaOne Pro 30-Day Plan';
+    txtUsername.innerText = username;
+    txtPrice.innerText = `₹${(amount / 100).toFixed(2)}`;
+
+    // Store successful payment response parameters for retries
+    let verificationData = null;
+
+    function showState(element) {
+      document.querySelectorAll('.state-section').forEach(el => el.classList.remove('state-active'));
+      element.classList.add('state-active');
+    }
+
+    if (!key_id || !order_id || !amount || !plan_id) {
+      showState(stateError);
+      document.getElementById('err-title').innerText = "Invalid Session Parameters";
+      document.getElementById('err-desc').innerText = "The checkout URL is missing critical parameter variables. Please start the payment again from the JivaOne Desktop App.";
+      btnPay.disabled = true;
+    }
+
+    // 2. Initialize Razorpay options
+    const options = {
+      key: key_id,
+      amount: amount,
+      currency: "INR",
+      name: "JivaOne Pro",
+      description: isPlan365 ? "365-Day Annual Subscription" : "30-Day Subscription",
+      order_id: order_id,
+      handler: async function (paymentResponse) {
+        // Capture payment response
+        verificationData = {
+          provider: "razorpay",
+          order_id: order_id,
+          plan_id: plan_id,
+          payment_id: paymentResponse.razorpay_payment_id,
+          signature: paymentResponse.razorpay_signature,
+          username: username
+        };
+        await sendVerificationToLocalApp();
+      },
+      prefill: {
+        name: username
+      },
+      theme: {
+        color: "#8b5cf6"
+      }
+    };
+
+    const rzp = new Razorpay(options);
+
+    rzp.on('payment.failed', function (resp) {
+      showState(stateError);
+      document.getElementById('err-title').innerText = "Payment Failed";
+      document.getElementById('err-desc').innerText = resp.error.description || "The transaction was declined by the bank.";
+    });
+
+    btnPay.onclick = function() {
+      rzp.open();
+    };
+
+    // 3. Sync verification back to local Flask server
+    async function sendVerificationToLocalApp() {
+      showState(stateVerifying);
+      
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
+        const response = await fetch('http://127.0.0.1:5050/api/recharge/verify-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(verificationData),
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        const data = await response.json();
+        
+        if (response.ok && data.status === 'success') {
+          showState(stateSuccess);
+        } else {
+          showState(stateError);
+          document.getElementById('err-title').innerText = "Verification Failed";
+          document.getElementById('err-desc').innerText = data.message || "Local server signature verification failed.";
+        }
+      } catch (err) {
+        console.error("Local app sync error:", err);
+        // Show retriable local connection error screen
+        showState(stateLocalError);
+        document.getElementById('lbl-err-order').innerText = verificationData.order_id;
+        document.getElementById('lbl-err-pay').innerText = verificationData.payment_id;
+        document.getElementById('lbl-err-sig').innerText = verificationData.signature;
+      }
+    }
+
+    // Connect Retry handler
+    document.getElementById('btn-retry-local').onclick = async function() {
+      if (verificationData) {
+        const btn = document.getElementById('btn-retry-local');
+        btn.disabled = true;
+        btn.innerText = "Syncing...";
+        await sendVerificationToLocalApp();
+        btn.disabled = false;
+        btn.innerText = "Retry Syncing with App";
+      }
+    };
+
+    // Toggle Payment Details visibility
+    document.getElementById('btn-copy-payment-details').onclick = function() {
+      const infoBox = document.getElementById('manual-verify-info');
+      const isHidden = infoBox.style.display === 'none';
+      infoBox.style.display = isHidden ? 'block' : 'none';
+      document.getElementById('btn-copy-payment-details').innerText = isHidden ? 'Hide Details' : 'Show Payment Details';
+    };
+  </script>
+</body>
+</html>
